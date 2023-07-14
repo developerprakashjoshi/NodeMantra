@@ -64,7 +64,7 @@ export default class StorageService extends Service {
     try {
       const records = await this.storageModel.findOne({ where: { name: fileName } });
       const params = {
-        Bucket: process.env.AWS_BUCKET || 'lnc-stage',
+        Bucket: process.env.AWS_BUCKET || '',
         Key: fileName,
       };
       return new Promise((resolve, reject) => {
@@ -91,7 +91,7 @@ export default class StorageService extends Service {
       const fileName = directoryname + "/" + file.originalname;
       const name = file.originalname;
       const params = {
-        Bucket: process.env.AWS_BUCKET || 'lnc-stage',
+        Bucket: process.env.AWS_BUCKET || '',
         Key: fileName,
         Body: fileContent,
       };
@@ -123,7 +123,7 @@ export default class StorageService extends Service {
       const fileName = directoryname + "/" + file;
       const name = file;
       const params = {
-        Bucket: process.env.AWS_BUCKET || 'lnc-stage',
+        Bucket: process.env.AWS_BUCKET || '',
         Key: fileName,
         Body: fileContent,
       };

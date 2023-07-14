@@ -25,10 +25,7 @@ if (process.env.NODE_ENV === 'production') {
 
 import AppDataSource from "@config/mongoose";
 import roleRoutes from "@routes/role.route";
-import userRoutes from "@routes/user.route";
 import storageRoutes from "@routes/storage.route";
-import jobRoute from  '@routes/job.route';
-import companyRoute from '@routes/company.route'
 
 import { errorHandler, notFound } from "@libs/error.handler";
 
@@ -64,9 +61,6 @@ app.get("/api/test", (req: Request, res: Response) => {
 
 app.use("/api/v1/role", roleRoutes);
 app.use("/api/v1/storage", storageRoutes);
-app.use("/api/v1/user", userRoutes);
-app.use('/api/v1/job',jobRoute);
-app.use('/api/v1/company',companyRoute)
 
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
