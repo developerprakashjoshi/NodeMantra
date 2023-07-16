@@ -1,0 +1,18 @@
+import express  from "express";
+
+import <%= className %>Controller from '@controllers/<%= classNameLowerCase %>.controller';
+import validator from "@middlewares/validator.middleware";
+import {create<%= className %>,update<%= className %>,delete<%= className %>} from "@validators/<%= classNameLowerCase %>.validator"
+const route=express.Router();
+
+route.get('/search', <%= className %>Controller.search);
+route.get('/datatable',<%= className %>Controller.datatable)
+route.get('/count',<%= className %>Controller.count)
+route.get('/',<%= className %>Controller.get<%= className %>s)
+route.get('/:id',<%= className %>Controller.get<%= className %>)
+route.post('/',validator(create<%= className %>),<%= className %>Controller.create<%= className %>)
+route.patch('/:id',validator(update<%= className %>),<%= className %>Controller.update<%= className %>)
+route.delete('/:id',validator(delete<%= className %>),<%= className %>Controller.delete<%= className %>)
+
+export default route;
+

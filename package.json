@@ -8,6 +8,7 @@
     "stage": "NODE_ENV=stage node dist/index.js",
     "dev": "NODE_ENV=development nodemon src/index.ts",
     "build": "NODE_ENV=production tsc -p .",
+    "artisan": "ts-node ./.node_mantra/sdk/artisan.ts",
     "migration:generate": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -d ./src/database/AppDataSource.ts",
     "migration:up": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d ./src/database/AppDataSource.ts",
     "migration:down": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:revert -d ./src/database/AppDataSource.ts",

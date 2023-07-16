@@ -1,0 +1,63 @@
+import { Request, Response } from "express";
+
+import <%= className %>Service from '@services/<%= classNameLowerCase %>.service'
+import Controller from "@libs/controller";
+export default class <%= className %>Controller extends Controller {
+
+static async  count (req: Request, res: Response) {
+    let <%= classNameLowerCase %>Service=new <%= className %>Service();
+    const result = await <%= classNameLowerCase %>Service.count()
+    res.status(result.statusCode).json(result);
+}
+
+static async get<%= className %>s(req: Request, res: Response)  {
+  let <%= classNameLowerCase %>Service=new <%= className %>Service();
+  const record = await <%= classNameLowerCase %>Service.list();
+  res.status(record.statusCode).json(record);
+}
+
+static async get<%= className %>(req: Request, res: Response) {
+  let id = req.params.id
+  let <%= classNameLowerCase %>Service=new <%= className %>Service();
+  const records = await <%= classNameLowerCase %>Service.retrieve(id)
+  res.status(records.statusCode).json(records);
+}
+
+static async create<%= className %>(req: Request, res: Response) {
+    const data=req.body
+    let <%= classNameLowerCase %>Service=new <%= className %>Service();
+    const result = await <%= classNameLowerCase %>Service.create(data)
+    res.status(result.statusCode).json(result);
+}
+
+
+static  async update<%= className %>(req: Request, res: Response) {
+    const id =req.params.id;
+    const data=req.body
+    let <%= classNameLowerCase %>Service=new <%= className %>Service();
+    const result = await <%= classNameLowerCase %>Service.update(id,data)
+    res.status(result.statusCode).json(result);
+  }
+
+static async delete<%= className %>(req: Request, res: Response)  {
+    let id = req.params.id;
+    let <%= classNameLowerCase %>Service=new <%= className %>Service();
+    const result = await <%= classNameLowerCase %>Service.delete(id)
+    res.status(result.statusCode).json(result);
+}
+
+static  async datatable(req: Request, res: Response) {
+    const data = req.query;
+    let <%= classNameLowerCase %>Service=new <%= className %>Service();
+    const records = await <%= classNameLowerCase %>Service.datatable(data)
+    res.status(records.statusCode).json(records);
+  }
+
+    static async search(req: Request, res: Response) {
+    const query = req.query.q;
+    let <%= classNameLowerCase %>Service=new <%= className %>Service();
+    const results = await <%= classNameLowerCase %>Service.search<%= className %>s(query);
+    res.status(results.statusCode).json(results);
+     
+  }
+}
