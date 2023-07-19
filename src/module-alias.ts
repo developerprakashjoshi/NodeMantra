@@ -7,6 +7,7 @@ moduleAlias.addAliases({
     '@services': `${__dirname}/app/services`,
     '@middlewares': `${__dirname}/app/middlewares`,
     '@validators': `${__dirname}/app/validators`,
+    '@graphschema': `${__dirname}/app/graphschema`,
     '@libs': `${__dirname}/libs`,
     '@config': `${__dirname}/config`,
     '@routes':`${__dirname}/routes`

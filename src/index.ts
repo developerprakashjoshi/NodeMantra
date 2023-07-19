@@ -7,6 +7,20 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 
+// import { schema } from './schema';
+// import { resolvers } from './resolver';
+// const typeDefs = gql`
+//   type Query {
+//     hello: String
+//   }
+// `;
+
+// const resolvers = {
+//   Query: {
+//     hello: () => 'Hello, GraphQL!',
+//   },
+// };
+
 dotenv.config();
 
 if (process.env.NODE_ENV === 'production') {
@@ -26,10 +40,11 @@ if (process.env.NODE_ENV === 'production') {
 import AppDataSource from "@config/mongoose";
 import roleRoutes from "@routes/role.route";
 import storageRoutes from "@routes/storage.route";
-
+import userRoutes from "@routes/user.route";
 import { errorHandler, notFound } from "@libs/error.handler";
 
 const app: Application = express();
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,6 +63,7 @@ const logFormat =
   "Request Body: :req-body\n";
 app.use(morgan(logFormat));
 
+
 app.get("/api/demo", (req: Request, res: Response) => {
   console.log(req.isAuthenticated());
   const jwtPayload = { id: 1 };
@@ -61,7 +77,7 @@ app.get("/api/test", (req: Request, res: Response) => {
 
 app.use("/api/v1/role", roleRoutes);
 app.use("/api/v1/storage", storageRoutes);
-
+app.use("/api/v1/user",userRoutes);
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
@@ -77,10 +93,12 @@ AppDataSource.on(
   "error",
   console.error.bind(console, "MongoDB connection error:")
 );
-AppDataSource.once("open", () => {
+AppDataSource.once("open",  async() => {
   console.log("Connected to MongoDB");
-
-  app.listen(process.env.APP_PORT, () => {
+  // const server = new ApolloServer({ typeDefs, resolvers });
+  // await server.start()
+  // server.applyMiddleware({ app });
+  app.listen(process.env.APP_PORT,async () => {
     console.log(
       `Server started with port ${process.env.APP_HOST}:${process.env.APP_PORT}`
     );
