@@ -14,7 +14,7 @@ const getSchema = async () => {
 
 route.use('/', graphqlHTTP(async () => ({
   schema: await getSchema(),
-  graphiql: true,
+  graphiql: process.env.NODE_ENV === 'development'?true:false,
 })));
 
 export default route;
