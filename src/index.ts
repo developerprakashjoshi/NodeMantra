@@ -7,20 +7,6 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 
-// import { schema } from './schema';
-// import { resolvers } from './resolver';
-// const typeDefs = gql`
-//   type Query {
-//     hello: String
-//   }
-// `;
-
-// const resolvers = {
-//   Query: {
-//     hello: () => 'Hello, GraphQL!',
-//   },
-// };
-
 dotenv.config();
 
 if (process.env.NODE_ENV === 'production') {
@@ -35,7 +21,6 @@ if (process.env.NODE_ENV === 'production') {
 }else{
   console.log("Cannot connect to environment");
 }
-
 
 import AppDataSource from "@config/mongoose";
 import roleRoutes from "@routes/role.route";
@@ -100,7 +85,7 @@ AppDataSource.once("open",  async() => {
   // server.applyMiddleware({ app });
   app.listen(process.env.APP_PORT,async () => {
     console.log(
-      `Server started with port ${process.env.APP_HOST}:${process.env.APP_PORT}`
+      `Server started with port http://${process.env.APP_HOST}:${process.env.APP_PORT}`
     );
   });
 });
