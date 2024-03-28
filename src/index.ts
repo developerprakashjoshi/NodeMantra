@@ -9,20 +9,26 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: '.env.production' });
-  console.log("Connect to production environment");
-} else if (process.env.NODE_ENV === 'development') {
-  dotenv.config({ path: '.env.development' });
-  console.log("Connect to development environment");
-}else if (process.env.NODE_ENV === 'stage') {
-  dotenv.config({ path: '.env.stage' });
-  console.log("Connect to stage environment");
-}else{
-  console.log("Cannot connect to environment");
+// Load environment variables based on NODE_ENV
+switch (process.env.NODE_ENV) {
+  case 'production':
+    dotenv.config({ path: '.env.production' });
+    console.log("Connect to production environment");
+    break;
+  case 'development':
+    dotenv.config({ path: '.env.development' });
+    console.log("Connect to development environment");
+    break;
+  case 'stage':
+    dotenv.config({ path: '.env.stage' });
+    console.log("Connect to stage environment");
+    break;
+  default:
+    console.log("Cannot connect to environment");
 }
 
-import AppDataSource from "@config/mongoose";
+
+import AppDataSource from "@config/database";
 import roleRoutes from "@routes/role.route";
 import storageRoutes from "@routes/storage.route";
 import userRoutes from "@routes/user.route";
@@ -74,18 +80,23 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Handle connection events
-AppDataSource.on(
-  "error",
-  console.error.bind(console, "MongoDB connection error:")
-);
-AppDataSource.once("open",  async() => {
-  console.log("Connected to MongoDB");
-  // const server = new ApolloServer({ typeDefs, resolvers });
-  // await server.start()
-  // server.applyMiddleware({ app });
-  app.listen(process.env.APP_PORT,async () => {
-    console.log(
-      `Server started with port http://${process.env.APP_HOST}:${process.env.APP_PORT}`
-    );
-  });
-});
+
+AppDataSource.initialize()
+    .then(() => {
+      // const server = new ApolloServer({ typeDefs, resolvers });
+      // await server.start()
+      // server.applyMiddleware({ app });
+      app.listen(process.env.APP_PORT,async () => {
+        console.log(
+          `Server started with port http://${process.env.APP_HOST}:${process.env.APP_PORT}`
+        );
+      });
+    })
+    .catch((err) => {
+        console.error("Error during Data Source initialization", err)
+    })
+
+
+  
+  
+

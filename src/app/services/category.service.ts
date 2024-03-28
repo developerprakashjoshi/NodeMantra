@@ -1,29 +1,29 @@
 import AppDataSource from '@config/mongoose';
 import Service from '@libs/service';
 import Response from '@libs/response';
-import Role from '@models/role.schema';
+import Category from '@models/category.schema';
 // import User from '@models/user.schema';
 // import Post from '@models/post.schema';
 import SearchEngine from '@libs/meili.search';
 import { ObjectId } from 'mongodb';
 import moment from 'moment';
 
-export default class RoleService extends Service {
-  private roleModel: any;
+export default class CategoryService extends Service {
+  private categoryModel: any;
   private userModel: any;
   private postModel: any;
   private searchEngine: any;
   constructor() {
     super();
     this.searchEngine = new SearchEngine()
-    this.roleModel = Role;
+    this.categoryModel = Category;
     // this.userModel = User;
     // this.postModel = Post;
   }
 
   async count(): Promise<Response<any>> {
     try {
-      const result = await this.roleModel.countDocuments();
+      const result = await this.categoryModel.countDocuments();
       if (!result) {
         return new Response<any>(true, 200, 'Record not available', result);
       }
@@ -35,7 +35,7 @@ export default class RoleService extends Service {
 
   async list(): Promise<Response<any>> {
     try {
-      const result = await this.roleModel.find();
+      const result = await this.categoryModel.find();
       if (!result) {
         return new Response<any>(true, 200, 'Record not available', result);
       }
@@ -51,7 +51,7 @@ export default class RoleService extends Service {
       if (!isValidObjectId) {
         return new Response<any>(false, 400, 'Invalid ObjectId', undefined);
       }
-      const record = await this.roleModel.findById(pid);
+      const record = await this.categoryModel.findById(pid);
       if (!record) {
         return new Response<any>(true, 200, 'Record not available', record);
       }
@@ -61,9 +61,9 @@ export default class RoleService extends Service {
     }
   }
 
-  async retrieveByRole(name: string): Promise<any> {
+  async retrieveByCategory(name: string): Promise<any> {
     try {
-      const records = await this.roleModel.findOne({ name: name });
+      const records = await this.categoryModel.findOne({ name: name });
       return records;
     } catch (error: any) {
       return error;
@@ -72,14 +72,14 @@ export default class RoleService extends Service {
 
   async create(data: any): Promise<Response<any>> {
     try {
-      const role = new Role();
-      role.name = data.name;
-      role.description =data.description;
-      role.status= data.status;
-      role.createdAt=moment().toDate();
-      role.updatedAt=moment().toDate();
-      // await this.searchEngine.addDocuments('role', role);
-      const result = await role.save();
+      const category = new Category();
+      category.name = data.name;
+      category.description =data.description;
+      category.status= data.status;
+      category.createdAt=moment().toDate();
+      category.updatedAt=moment().toDate();
+      await this.searchEngine.addDocuments('category', category);
+      const result = await category.save();
       return new Response<any>(true, 201, 'Insert operation successful',result);
       
     } catch (error:any) {
@@ -93,21 +93,21 @@ export default class RoleService extends Service {
       if (!isValidObjectId) {
         return new Response<any>(false, 400, 'Invalid ObjectId', undefined);
       }
-      const role = await this.roleModel.findById(pid);
-      if (!role) {
-        return new Response<any>(true, 200, 'Record not available', role);
+      const category = await this.categoryModel.findById(pid);
+      if (!category) {
+        return new Response<any>(true, 200, 'Record not available', category);
       }
       if (data.name) {
-        role.name = data.name;
+        category.name = data.name;
       }
       if (data.description) {
-        role.description = data.description;
+        category.description = data.description;
       }
       if (data.status) {
-        role.status = data.status;
+        category.status = data.status;
       }
-      // await this.searchEngine.updateIndex('role', role);
-      const result = await role.save();
+      await this.searchEngine.updateIndex('category', category);
+      const result = await category.save();
       
       return new Response<any>(true, 200, 'Update operation successful', result);
     } catch (error: any) {
@@ -121,13 +121,13 @@ export default class RoleService extends Service {
       if (!isValidObjectId) {
         return new Response<any>(false, 400, 'Invalid ObjectId', undefined);
       }
-      const role = await this.roleModel.findById(pid);
-      if (!role) {
+      const category = await this.categoryModel.findById(pid);
+      if (!category) {
         return new Response<any>(true, 200, 'Record not available');
       }
-      role.deletedAt = moment().toDate();
-      // await this.searchEngine.deleteDocument('role', pid);
-      const result = await role.save();
+      category.deletedAt = moment().toDate();
+      await this.searchEngine.deleteDocument('category', pid);
+      const result = await category.save();
       return new Response<any>(true, 200, 'Delete operation successful', result);
     } catch (error: any) {
       return new Response<any>(false, 500, 'Internal Server Error', undefined, undefined, error.message);
@@ -180,7 +180,7 @@ export default class RoleService extends Service {
       limit = limit === undefined ? 10 : parseInt(limit);
       const skip = (page - 1) * limit;
       const [records, totalCount] = await Promise.all([
-        this.roleModel.find()
+        this.categoryModel.find()
           .select({ 
             "name": 1,
             "description":1,
@@ -191,7 +191,7 @@ export default class RoleService extends Service {
           .sort(sortQuery)
           .skip(skip)
           .limit(limit),
-        this.roleModel.countDocuments(searchQuery),
+        this.categoryModel.countDocuments(searchQuery),
       ]);
       console.log(records, totalCount)
       if (records.length === 0) {
@@ -212,13 +212,13 @@ export default class RoleService extends Service {
       return new Response<any>(false, 500, 'Internal Server Error', undefined, undefined, error.message);
     }
   }
-  async searchRoles(query: any): Promise<Response<any>> {
+  async searchCategorys(query: any): Promise<Response<any>> {
     try {
       const searchOptions = {
         filters: `name:${query}*`, // Specify the filter to search in the "name" column with a partial match
         attributesToRetrieve: ['name'], // Specify the column(s) to retrieve in the search results
       };
-      const result = await this.searchEngine.search('role', query, searchOptions);
+      const result = await this.searchEngine.search('category', query, searchOptions);
       return new Response<any>(true, 200, 'Search engine operation successful', result);
     } catch (error: any) {
       return new Response<any>(false, 500, 'Search engine server error', undefined, undefined, error.message);

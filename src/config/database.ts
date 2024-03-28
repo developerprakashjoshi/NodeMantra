@@ -9,9 +9,9 @@ const migrations = isProduction
   ? ['src/database/migrations/*.js']
   : ['src/database/migrations/*.ts'];
 const AppDataSource = new DataSource({
-  type: 'mongodb',
+  type: 'postgres',
   host: process.env.DB_HOST || '127.0.0.1',
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 27017,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
   username: process.env.DB_USERNAME || '',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_DATABASE || 'nodemantra',
